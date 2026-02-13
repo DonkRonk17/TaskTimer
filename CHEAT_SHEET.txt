@@ -1,0 +1,279 @@
+================================================================================
+TASKTIMER CHEAT SHEET
+================================================================================
+
+QUICK START
+-----------
+1. Clone: git clone https://github.com/DonkRonk17/TaskTimer
+2. Run: python tasktimer.py --version
+3. Start: python tasktimer.py start "Task name"
+
+================================================================================
+COMMON COMMANDS
+--------------------------------------------------------------------------------
+
+Start Session:
+  tasktimer start "Task name"
+  tasktimer start "Task" --duration 90
+  tasktimer start "Task" --category development
+  tasktimer start "Task" --notes "Initial notes"
+
+Control Session:
+  tasktimer status              # Check current session
+  tasktimer pause               # Pause active session
+  tasktimer resume              # Resume paused session
+  tasktimer stop                # Stop and complete
+  tasktimer stop --notes "Done" # Stop with notes
+
+List Sessions:
+  tasktimer list                       # Last 10 sessions
+  tasktimer list --limit 50            # Last 50 sessions
+  tasktimer list --category development
+  tasktimer list --status completed
+  tasktimer list --start 2026-02-01 --end 2026-02-15
+
+Generate Reports:
+  tasktimer report daily               # Today's productivity
+  tasktimer report daily --date 2026-02-10
+  tasktimer report weekly              # This week
+  tasktimer report weekly --date 2026-02-03
+
+================================================================================
+CLI FLAGS & OPTIONS
+--------------------------------------------------------------------------------
+
+Global Options:
+  -h, --help         Show help message
+  --version          Show version number
+
+Start Command Options:
+  --duration MINS    Duration in minutes (default: 25)
+  --category CAT     Task category
+  --notes "..."      Session notes
+
+Stop Command Options:
+  --notes "..."      Completion notes
+
+List Command Options:
+  --start DATE       Start date (YYYY-MM-DD)
+  --end DATE         End date (YYYY-MM-DD)
+  --category CAT     Filter by category
+  --status STATUS    Filter by status (active/paused/completed/abandoned)
+  --limit N          Limit results (default: 10)
+
+Report Command Options:
+  daily|weekly       Report type
+  --date DATE        Specific date or week start (YYYY-MM-DD)
+
+================================================================================
+PYTHON API
+--------------------------------------------------------------------------------
+
+Import:
+  from tasktimer import TaskTimer
+
+Basic Usage:
+  timer = TaskTimer()
+  session_id = timer.start_session("Task name")
+  status = timer.get_status()
+  session = timer.stop_session()
+
+Advanced:
+  timer = TaskTimer(
+      config_path=Path("custom/config.json"),
+      db_path=Path("custom/sessions.db")
+  )
+  
+  session_id = timer.start_session(
+      task_name="Task",
+      duration=1500,  # seconds
+      category="development",
+      notes="Initial notes",
+      heartbeat_id="hb_123",
+      task_queue_id="tq_456"
+  )
+  
+  timer.pause_session()
+  timer.resume_session()
+  session = timer.stop_session(notes="Completion notes")
+
+Analytics:
+  daily = timer.analytics.daily_report()
+  weekly = timer.analytics.weekly_report()
+  
+Session Management:
+  sessions = timer.sessions.list_sessions(
+      start_date="2026-02-01",
+      category="development",
+      status="completed",
+      limit=100
+  )
+
+================================================================================
+INTEGRATION WITH OTHER TOOLS
+-----------------------------
+
+With AgentHeartbeat:
+  from agentheartbeat import AgentHeartbeatMonitor
+  from tasktimer import TaskTimer
+  
+  heartbeat = AgentHeartbeatMonitor()
+  timer = TaskTimer()
+  
+  hb_id = heartbeat.emit_heartbeat("ATLAS", status="working")
+  session_id = timer.start_session("Task", heartbeat_id=hb_id)
+
+With TaskQueuePro:
+  from taskqueuepro import TaskQueuePro
+  from tasktimer import TaskTimer
+  
+  queue = TaskQueuePro()
+  timer = TaskTimer()
+  
+  task = queue.get_next_task("ATLAS")
+  session_id = timer.start_session(task.title, task_queue_id=task.task_id)
+
+With SynapseLink:
+  from synapselink import quick_send
+  from tasktimer import TaskTimer
+  
+  timer = TaskTimer()
+  session = timer.stop_session()
+  
+  quick_send("TEAM", "Session Complete", f"Finished: {session['task_name']}")
+
+With MemoryBridge:
+  from memorybridge import MemoryBridge
+  from tasktimer import TaskTimer
+  
+  memory = MemoryBridge()
+  timer = TaskTimer()
+  
+  report = timer.analytics.daily_report()
+  memory.set(f"productivity.{report['date']}", report)
+
+================================================================================
+CONFIGURATION
+--------------------------------------------------------------------------------
+
+Config File Location:
+  ~/.tasktimer/config.json
+
+Default Config:
+  {
+    "timer": {
+      "pomodoro_duration": 1500,
+      "short_break_duration": 300,
+      "long_break_duration": 900,
+      "pomodoros_until_long_break": 4
+    },
+    "notifications": {
+      "enabled": true,
+      "sound_enabled": true,
+      "urgency": "normal"
+    },
+    "database": {
+      "path": "~/.tasktimer/sessions.db",
+      "auto_backup": true,
+      "backup_frequency_days": 7
+    }
+  }
+
+Edit Config:
+  notepad ~/.tasktimer/config.json  # Windows
+  nano ~/.tasktimer/config.json     # Linux/macOS
+
+================================================================================
+TROUBLESHOOTING
+--------------------------------------------------------------------------------
+
+Problem: No module named 'tasktimer'
+  Solution: Run from TaskTimer directory or pip install -e .
+
+Problem: Notifications not appearing
+  Solution: Check OS notification settings, fallback uses terminal
+
+Problem: Database locked
+  Solution: Close other TaskTimer instances
+
+Problem: Config corrupted
+  Solution: Delete ~/.tasktimer/config.json, will recreate
+
+Problem: Tests failing
+  Solution: python -c "from pathlib import Path; import shutil; p = Path.home() / '.tasktimer'; shutil.rmtree(p, ignore_errors=True)"
+
+================================================================================
+DATABASE & FILES
+--------------------------------------------------------------------------------
+
+Database Location:
+  ~/.tasktimer/sessions.db
+
+Config Location:
+  ~/.tasktimer/config.json
+
+Log Location (if enabled):
+  ~/.teambrain/logs/tasktimer.log
+
+Backup Location:
+  ~/.tasktimer/sessions.db.backup
+
+Clean Everything:
+  rm -rf ~/.tasktimer  # Linux/macOS
+  Remove-Item -Recurse -Force ~/.tasktimer  # Windows PowerShell
+
+================================================================================
+KEYBOARD SHORTCUTS (if running in terminal)
+--------------------------------------------------------------------------------
+
+Ctrl+C          Cancel operation
+Ctrl+D          Exit interactive mode (if implemented)
+
+================================================================================
+FOCUS SCORE INTERPRETATION
+--------------------------------------------------------------------------------
+
+85-100:  Excellent focus day - highly productive
+70-84:   Good productivity - above average
+50-69:   Moderate focus - room for improvement
+<50:     Distracted day - consider what interfered
+
+Score Factors:
+  - Completion rate (40%)
+  - Hours worked vs goal (30%)
+  - Low distraction rate (20%)
+  - Consistency (10%)
+
+================================================================================
+TIPS & BEST PRACTICES
+--------------------------------------------------------------------------------
+
+1. Use categories consistently for better analytics
+2. Add notes to sessions for context
+3. Review daily reports at end of each day
+4. Set realistic daily goal hours (default: 8h)
+5. Pause during interruptions instead of abandoning
+6. Link to TaskQueuePro for task time tracking
+7. Use weekly reports for productivity trends
+8. Export data periodically for backup
+
+================================================================================
+RESOURCES
+--------------------------------------------------------------------------------
+
+Documentation:   TaskTimer/README.md
+Examples:        TaskTimer/EXAMPLES.md
+Integration:     TaskTimer/INTEGRATION_PLAN.md
+Quick Guides:    TaskTimer/QUICK_START_GUIDES.md
+Architecture:    TaskTimer/ARCHITECTURE.md
+GitHub:          https://github.com/DonkRonk17/TaskTimer
+Issues:          https://github.com/DonkRonk17/TaskTimer/issues
+
+================================================================================
+
+Version: 1.0.0
+Built by: ATLAS (Team Brain)
+For: Logan Smith / Metaphy LLC
+Date: February 12, 2026
+
+================================================================================

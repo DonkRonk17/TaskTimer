@@ -1,0 +1,20 @@
+# No external dependencies required!
+# TaskTimer uses Python standard library only
+
+# Python 3.7+ required
+# - time (stdlib)
+# - sqlite3 (stdlib)
+# - json (stdlib)
+# - pathlib (stdlib)
+# - argparse (stdlib)
+# - subprocess (stdlib)
+# - dataclasses (stdlib, Python 3.7+)
+# - typing (stdlib)
+# - uuid (stdlib)
+# - datetime (stdlib)
+# - tempfile (stdlib)
+# - unittest (stdlib)
+
+# For development/testing only:
+# unittest (stdlib)
+# unittest.mock (stdlib)
