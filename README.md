@@ -1,3 +1,5 @@
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/6323e8f2-1aac-4ca6-b0c3-1c095bda3cf1" />
+
 # ⏱️ TaskTimer
 
 **Pomodoro-Style Productivity Timer with Deep Team Brain Integration**
@@ -632,6 +634,9 @@ python test_tasktimer.py
 ```
 
 ---
+
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/a384b84f-9ea8-4d2e-87f1-45a2dbee8642" />
+
 
 ## 🤝 Contributing
 
