@@ -580,7 +580,7 @@ class TestTaskTimerIntegration(unittest.TestCase):
         self.assertEqual(self.timer.timer.state, 'running')
         
         # Stop
-        time.sleep(0.1)
+        time.sleep(1.1)
         session = self.timer.stop_session()
         self.assertGreater(session['duration_seconds'], 0)
     

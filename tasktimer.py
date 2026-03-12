@@ -33,6 +33,7 @@ TOOLS USED IN THIS BUILD:
 """
 
 import argparse
+import copy
 import json
 import os
 import sqlite3
@@ -97,15 +98,15 @@ class Config:
                 with open(self.config_path, 'r') as f:
                     user_config = json.load(f)
                 # Merge with defaults
-                config = self.DEFAULT_CONFIG.copy()
+                config = copy.deepcopy(self.DEFAULT_CONFIG)
                 self._deep_update(config, user_config)
                 return config
             except Exception as e:
                 print(f"[!] Warning: Failed to load config: {e}")
-                return self.DEFAULT_CONFIG.copy()
+                return copy.deepcopy(self.DEFAULT_CONFIG)
         else:
             # Create default config
-            config = self.DEFAULT_CONFIG.copy()
+            config = copy.deepcopy(self.DEFAULT_CONFIG)
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
             # Write default config
             with open(self.config_path, 'w') as f:
